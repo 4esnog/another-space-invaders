@@ -2,3 +2,5 @@ node_modules/
 target/
 public/*
 !public/index.html
+!public/style.css
+npm*

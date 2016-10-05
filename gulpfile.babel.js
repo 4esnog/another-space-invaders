@@ -29,7 +29,7 @@ gulp.task('bs', () => {
 });
 
 gulp.task('watch', () => {
-    gulp.watch('**/*.html', function watchHtml (done) {
+    gulp.watch(['**/*.html', '**/*.css'], function watchHtmlCss (done) {
         bs.reload();
         done();
     });
