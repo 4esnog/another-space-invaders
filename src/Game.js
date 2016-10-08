@@ -1,5 +1,6 @@
 import { throttle } from 'lodash';
 import Player from './Player';
+import EnemiesGroup from './EnemiesGroup';
 const BGCOLOR = '#1C191E';
 
 class Game {
@@ -15,13 +16,14 @@ class Game {
                 left: false,
             },
         };
-        this.bullets = [];
 
         // Draw initial state
         this.resize();
         this.ctx.fillStyle = BGCOLOR;
         this.ctx.fillRect(0, 0, this.sizes.width, this.sizes.height);
 
+        this.bullets = [];
+        this.enemies = new EnemiesGroup(this.ctx, this.sizes);
         this.player = new Player(this.ctx, this.sizes);
         const playerPosition = {
             top: Math.round(this.sizes.height - this.sizes.height * 0.1),
@@ -62,6 +64,19 @@ class Game {
         }
     }
 
+    isElementInside (native, outer) {
+        if (
+            (outer.x + outer.width) < native.x ||
+            outer.x > native.x + native.width ||
+            (outer.y + outer.height) < native.y ||
+            outer.y > native.y + native.height
+        ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     setSizes (styles) {
         this.sizes = {
             height: parseInt(styles.height),
@@ -86,17 +101,32 @@ class Game {
                 lastTime = time;
                 this.clearCanvas();
 
-                this.bullets = this.bullets.filter((bullet) => {
-                    const { width, height, x, y } = bullet.state;
+                this.bullets = this.bullets.filter(bullet => {
+                    let status = true;
+                    this.enemies.enemies = this.enemies.enemies.filter(enemy => {
+                        if (!bullet) return true;
+                        if (this.isElementInside(enemy.state, bullet.state)) {
+                            enemy = null;
+                            bullet = null;
+                            status = false;
+                            return false;
+                        } else {
+                            const { width, height, x, y } = bullet.state;
+                            status = this.isElementVisible(width, height, x, y);
+                            return true;
+                        }
+                    });
 
-                    if (this.isElementVisible(width, height, x, y)) {
+                    if (status) {
                         bullet.move(bullet.direction, timeDiff);
-                        return true;
                     } else {
                         bullet = null;
-                        return false;
                     }
+
+                    return status;
                 });
+
+                this.enemies.paintAll();
 
                 for (let key in this.state.move) {
                     if (this.state.move[key]) {
