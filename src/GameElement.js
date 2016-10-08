@@ -1,11 +1,13 @@
 class GameElement {
-    constructor (ctx, gameSizes, width = 30, height = 30, speed = 20) {
+    constructor (ctx, gameSizes, width = 30, height = 30, speed = 20, x, y) {
         this.ctx = ctx;
         this.gameSizes = gameSizes;
         this.state = {
-            width: this.gameSizes.wUnit * 5,
+            width,
             height,
             speed,
+            x,
+            y,
         };
     }
 
@@ -13,7 +15,7 @@ class GameElement {
         x = this.state.x,
         y = this.state.y,
         width = this.state.width,
-        height = this.state.height
+        height = this.state.height,
     ) {
         this.state = { ...this.state, x, y };
         this.ctx.fillStyle = '#f1d';
@@ -42,12 +44,12 @@ class GameElement {
             }
 
             case 'top': {
-                this.setNewPosition(0, -1, speed, time);
+                this.setNewPosition(0, 1, speed, time);
                 break;
             }
 
             case 'bottom': {
-                this.setNewPosition(0, 1, speed, time);
+                this.setNewPosition(0, -1, speed, time);
                 break;
             }
         }

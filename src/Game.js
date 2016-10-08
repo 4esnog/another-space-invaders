@@ -15,6 +15,7 @@ class Game {
                 left: false,
             },
         };
+        this.bullets = [];
 
         // Draw initial state
         this.resize();
@@ -48,12 +49,25 @@ class Game {
         this.ctx.fillRect(0, 0, this.sizes.width, this.sizes.height);
     }
 
+    isElementVisible (width, height, x, y) {
+        if (
+            (x + width) < 0 ||
+            x > this.sizes.width ||
+            (y + height) < 0 ||
+            y > this.sizes.height
+        ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     setSizes (styles) {
         this.sizes = {
             height: parseInt(styles.height),
             width: parseInt(styles.width),
-            hUnit: parseInt(styles.height) / 100,
-            wUnit: parseInt(styles.width) / 100,
+            hUnit: Math.floor(parseInt(styles.height) / 100),
+            wUnit: Math.floor(parseInt(styles.width) / 100),
         };
     }
 
@@ -71,6 +85,18 @@ class Game {
                 timeDiff = time - lastTime;
                 lastTime = time;
                 this.clearCanvas();
+
+                this.bullets = this.bullets.filter((bullet) => {
+                    const { width, height, x, y } = bullet.state;
+
+                    if (this.isElementVisible(width, height, x, y)) {
+                        bullet.move(bullet.direction, timeDiff);
+                        return true;
+                    } else {
+                        bullet = null;
+                        return false;
+                    }
+                });
 
                 for (let key in this.state.move) {
                     if (this.state.move[key]) {
@@ -99,7 +125,8 @@ class Game {
 
     handleSpace (event) {
         if (!this.started) return;
-        this.player.fire();
+        const newBullet = this.player.fire();
+        this.bullets.push(newBullet);
     }
 
     handleArrowLeft (event) {

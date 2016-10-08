@@ -3,6 +3,6 @@
     "rules": {
         "indent": ["error", 4, { "SwitchCase": 1 }],
         "semi": ["error", "always"],
-        "comma-dangle": [1, "always-multiline"],
+        "comma-dangle": [1, "always-multiline"]
     }
 }
