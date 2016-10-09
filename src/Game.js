@@ -102,7 +102,9 @@ class Game {
                 this.clearCanvas();
 
                 this.bullets = this.bullets.filter(bullet => {
-                    let status = true;
+                    const { width, height, x, y } = bullet.state;
+                    let status = this.isElementVisible(width, height, x, y);
+
                     this.enemies.enemies = this.enemies.enemies.filter(enemy => {
                         if (!bullet) return true;
                         if (this.isElementInside(enemy.state, bullet.state)) {
@@ -111,8 +113,6 @@ class Game {
                             status = false;
                             return false;
                         } else {
-                            const { width, height, x, y } = bullet.state;
-                            status = this.isElementVisible(width, height, x, y);
                             return true;
                         }
                     });
@@ -135,6 +135,8 @@ class Game {
                         this.player.paint();
                     }
                 }
+                console.log(this.enemies.enemies);
+                console.log(this.bullets);
 
                 frame = window.requestAnimationFrame(drawFrame.bind(this));
             }
@@ -149,20 +151,19 @@ class Game {
         this.started = false;
     }
 
-    handleEnterEscape (event) {
+    handleEnter (event) {
         this.started ? this.pause() : this.start();
     }
 
     handleSpace (event) {
         if (!this.started) return;
-        const newBullet = this.player.fire();
-        this.bullets.push(newBullet);
+        this.player.fire(this.bullets);
     }
 
     handleArrowLeft (event) {
         if (!this.started || this.state.move.right) return;
 
-        if (event.type === 'keydown') {
+        if (event.type === 'keydown' || event.type === 'pointerdown') {
             this.state.move.left = true;
         } else {
             this.state.move.left = false;
@@ -172,7 +173,7 @@ class Game {
     handleArrowRight (event) {
         if (!this.started || this.state.move.left) return;
 
-        if (event.type === 'keydown') {
+        if (event.type === 'keydown' || event.type === 'pointerdown') {
             this.state.move.right = true;
         } else {
             this.state.move.right = false;

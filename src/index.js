@@ -3,6 +3,7 @@ import Menu from './Menu';
 
 document.addEventListener('DOMContentLoaded', () => {
     const menuNode = document.getElementById('menu');
+    const touchControls = document.getElementById('touch-controls');
     const canvas = document.getElementById('game');
     const menu = new Menu(menuNode);
     const game = new Game(canvas, menu);
@@ -14,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('keypress', (event) => {
         switch (event.code) {
             case 'Enter': {
-                game.handleEnterEscape(event);
+                game.handleEnter(event);
                 break;
             }
             case 'Space': {
@@ -40,4 +41,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('keydown', handleArrows);
     window.addEventListener('keyup', handleArrows);
+
+    function handleTouchControls (event) {
+        switch (event.target.id) {
+            case 'left': {
+                game.handleArrowLeft(event);
+                break;
+            }
+
+            case 'right': {
+                game.handleArrowRight(event);
+                break;
+            }
+        }
+    }
+
+    touchControls.addEventListener('pointerdown', handleTouchControls);
+    touchControls.addEventListener('pointerup', handleTouchControls);
+
+    menu.node.addEventListener('pointerup', (event) => {
+        if (!game.started) {
+            game.handleEnter(event);
+        }
+    });
 });

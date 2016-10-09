@@ -6,9 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Space Invaders by 4esnog</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
 </head>
 <body>
-    <canvas id="game"></canvas>
+    <canvas class="game" id="game"></canvas>
+    <div class="touch-controls" id="touch-controls" touch-action="none">
+        <div class="touch-controls__control" id="left"></div>
+        <div class="touch-controls__control" id="right"></div>
+    </div>
     <div class="menu" id="menu">
         <div class="menu__container">
             <h1 class="menu__header">Another Space Invaders</h1>
@@ -18,6 +23,6 @@
             </p>
         </div>
     </div>
-	<script src="./script.bundle.js" defer></script>
+    <script src="./script.bundle.js" defer></script>
 </body>
 </html>

@@ -19,7 +19,7 @@ class Player extends GameElement {
         return instance;
     }
 
-    fire () {
+    fire (bullets) {
         const x = Math.round(this.state.x + (this.state.width / 2));
         const y = Math.round(this.state.y - (this.state.height / 2));
 
@@ -30,8 +30,8 @@ class Player extends GameElement {
             x,
             y,
         );
-        console.log('fire!');
 
+        bullets.push(bullet);
         bullet.paint();
         return bullet;
     }
