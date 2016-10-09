@@ -24,7 +24,7 @@ class Player extends GameElement {
         const y = Math.round(this.state.y - (this.state.height / 2));
 
         const bullet = new Bullet(
-            this,
+            'player',
             this.ctx,
             this.gameSizes,
             x,

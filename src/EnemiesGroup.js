@@ -5,7 +5,7 @@ class EnemiesGroup extends GameElement {
     constructor (ctx, gameSizes) {
         super(ctx, gameSizes);
 
-        const speed = 20;
+        const speed = 7;
         const groupX = gameSizes.wUnit * 25;
         const groupY = gameSizes.hUnit * 10;
         const groupWidth = gameSizes.width - groupX * 2;
@@ -21,17 +21,24 @@ class EnemiesGroup extends GameElement {
                 );
             }
         }
+
+        this.state = {
+            ...this.state,
+            x: groupX,
+            y: groupY,
+            speed,
+        };
     }
 
-    paintAll () {
-        this.enemies.map(el => {
-            el.paint();
+    paint () {
+        this.enemies.map(enemy => {
+            enemy.paint();
         });
     }
 
-    moveAll (direction, time = 0, speed = this.state.speed) {
-        this.enemies.map(el => {
-            el.move(direction, time, speed);
+    move (direction, time = 0, speed = this.state.speed) {
+        this.enemies.map(enemy => {
+            enemy.move(direction, time);
         });
     }
 }

@@ -17,7 +17,8 @@ class GameElement {
         width = this.state.width,
         height = this.state.height,
     ) {
-        this.state = { ...this.state, x, y };
+        this.state.x = x;
+        this.state.y = y;
         this.ctx.fillStyle = '#f1d';
         this.ctx.fillRect(x, y, width, height);
     }
@@ -31,7 +32,7 @@ class GameElement {
         this.paint(newX, newY);
     }
 
-    move (direction, time = 0, speed = this.state.speed) {
+    move (direction, time = 1, speed = this.state.speed) {
         switch (direction) {
             case 'right': {
                 this.setNewPosition(1, 0, speed, time);
@@ -44,13 +45,17 @@ class GameElement {
             }
 
             case 'top': {
-                this.setNewPosition(0, 1, speed, time);
+                this.setNewPosition(0, -1, speed, time);
                 break;
             }
 
             case 'bottom': {
-                this.setNewPosition(0, -1, speed, time);
+                this.setNewPosition(0, 1, speed, time);
                 break;
+            }
+
+            default: {
+                this.paint();
             }
         }
     }
