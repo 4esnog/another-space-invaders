@@ -12,7 +12,7 @@ class Game {
         this.resize = throttle(this.resize, 500).bind(this);
         this.state = {
             movePlayer: false,
-            moveEnemies: false,
+            moveEnemies: 'right',
         };
 
         // Draw initial state
@@ -87,6 +87,31 @@ class Game {
         };
     }
 
+    changeEnemiesDirection (group) {
+        if (this.state.moveEnemies === 'bottom') {
+            if (this.state.prevDirection === 'left') {
+                this.state.moveEnemies = 'right';
+            } else {
+                this.state.moveEnemies = 'left';
+            }
+            // console.log(this.state);
+            this.state.prevDirection = 'bottom';
+            group.moveBottomWall(group.enemySize);
+        } else {
+            this.state.prevDirection = this.state.moveEnemies;
+            this.state.moveEnemies = 'bottom';
+        }
+    }
+
+    increaseLevel () {
+        const speed = this.enemies.state.speed + 2;
+        this.player.speed += 2;
+        this.state.moveEnemies = 'right';
+        this.enemies = new EnemiesGroup(this.ctx, this.sizes, speed);
+        this.enemies.paint();
+        this.start();
+    }
+
     /**
      * start - запустить game loop
      */
@@ -128,7 +153,17 @@ class Game {
                     return bulletStatus;
                 });
 
-                this.enemies.move(this.state.moveEnemies, timeDiff);
+                if (this.enemies.enemies.length === 0) {
+                    this.increaseLevel();
+                    return;
+                }
+
+                const canMoveEnemies = this.enemies.move(this.state.moveEnemies, timeDiff);
+                if (!canMoveEnemies) {
+                    console.log(this.state);
+                    // this.state.prevDirection = this.state.moveEnemies;
+                    this.changeEnemiesDirection(this.enemies);
+                }
 
                 if (this.state.movePlayer) {
                     this.player.move(this.state.movePlayer, timeDiff);

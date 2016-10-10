@@ -30,28 +30,32 @@ class GameElement {
         const newY = Math.round(this.state.y + dy);
 
         this.paint(newX, newY);
+        return {
+            dx: Math.round(dx),
+            dy: Math.round(dy),
+        };
     }
 
     move (direction, time = 1, speed = this.state.speed) {
         switch (direction) {
             case 'right': {
-                this.setNewPosition(1, 0, speed, time);
-                break;
+                this.moveDiff = this.setNewPosition(1, 0, speed, time);
+                return this.moveDiff;
             }
 
             case 'left': {
-                this.setNewPosition(-1, 0, speed, time);
-                break;
+                this.moveDiff = this.setNewPosition(-1, 0, speed, time);
+                return this.moveDiff;
             }
 
             case 'top': {
-                this.setNewPosition(0, -1, speed, time);
-                break;
+                this.moveDiff = this.setNewPosition(0, -1, speed, time);
+                return this.moveDiff;
             }
 
             case 'bottom': {
-                this.setNewPosition(0, 1, speed, time);
-                break;
+                this.moveDiff = this.setNewPosition(0, 1, speed, time);
+                return this.moveDiff;
             }
 
             default: {
