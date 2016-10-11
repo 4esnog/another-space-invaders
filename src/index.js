@@ -1,12 +1,15 @@
 import Game from './Game';
 import Menu from './Menu';
+import Score from './Score';
 
 document.addEventListener('DOMContentLoaded', () => {
     const menuNode = document.getElementById('menu');
+    const scoreNode = document.getElementById('score');
     const touchControls = document.getElementById('touch-controls');
     const canvas = document.getElementById('game');
     const menu = new Menu(menuNode);
-    const game = new Game(canvas, menu);
+    const score = new Score(scoreNode);
+    const game = new Game(canvas, menu, score);
 
     window.addEventListener('resize', () => {
         game.resize();

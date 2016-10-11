@@ -1,36 +1,20 @@
 import { throttle } from 'lodash';
 import Player from './Player';
 import EnemiesGroup from './EnemiesGroup';
+import { getRandomInt } from './helpers';
 const BGCOLOR = '#1C191E';
 
 class Game {
-    constructor (canvas, menu) {
+    constructor (canvas, menu, score) {
         this.started = false;
         this.menu = menu;
         this.canvas = canvas;
+        this.score = score;
         this.ctx = canvas.getContext('2d');
         this.resize = throttle(this.resize, 500).bind(this);
-        this.state = {
-            movePlayer: false,
-            moveEnemies: 'right',
-        };
+        this.initGame = this.initGame.bind(this);
 
-        // Draw initial state
-        this.resize();
-        this.ctx.fillStyle = BGCOLOR;
-        this.ctx.fillRect(0, 0, this.sizes.width, this.sizes.height);
-
-        this.bullets = [];
-
-        this.enemies = new EnemiesGroup(this.ctx, this.sizes);
-        this.enemies.paint();
-
-        this.player = new Player(this.ctx, this.sizes);
-        const playerPosition = {
-            top: Math.round(this.sizes.height - this.sizes.height * 0.1),
-            left: Math.round((this.sizes.width / 2) - (this.player.state.width / 2)),
-        };
-        this.player.paint(playerPosition.left, playerPosition.top);
+        this.initGame();
     }
 
     /**
@@ -94,7 +78,7 @@ class Game {
             } else {
                 this.state.moveEnemies = 'left';
             }
-            // console.log(this.state);
+
             this.state.prevDirection = 'bottom';
             group.moveBottomWall(group.enemySize);
         } else {
@@ -103,13 +87,46 @@ class Game {
         }
     }
 
+    initGame () {
+        // Draw initial state
+        this.resize();
+        this.clearCanvas();
+
+        this.score.update(0);
+
+        this.state = {
+            movePlayer: false,
+            moveEnemies: 'right',
+            points: 0,
+            level: 1,
+        };
+
+        this.bullets = [];
+
+        this.enemies = new EnemiesGroup(this.ctx, this.sizes);
+        this.enemies.paint();
+
+        this.player = new Player(this.ctx, this.sizes);
+        const playerPosition = {
+            top: Math.round(this.sizes.height - this.sizes.height * 0.1),
+            left: Math.round((this.sizes.width / 2) - (this.player.state.width / 2)),
+        };
+        this.player.paint(playerPosition.left, playerPosition.top);
+    }
+
     increaseLevel () {
+        this.state.level++;
         const speed = this.enemies.state.speed + 2;
-        this.player.speed += 2;
+        this.player.state.speed += 2;
         this.state.moveEnemies = 'right';
         this.enemies = new EnemiesGroup(this.ctx, this.sizes, speed);
         this.enemies.paint();
         this.start();
+    }
+
+    addPoints (points) {
+        this.state.points += points;
+        this.score.update(this.state.points);
     }
 
     /**
@@ -118,6 +135,10 @@ class Game {
     start () {
         let lastTime, timeDiff;
         this.menu.hide();
+        if (this.terminated) {
+            this.terminated = false;
+            this.initGame();
+        };
         this.started = true;
         let frame = window.requestAnimationFrame(function drawFrame (time) {
             if (!this.started) {
@@ -127,14 +148,32 @@ class Game {
                 lastTime = time;
                 this.clearCanvas();
 
+                const invasionSucceed = this.isElementInside(
+                    this.enemies.state,
+                    {
+                        ...this.player.state,
+                        x: 0,
+                        width: this.sizes.width,
+                    }
+                );
+
+                if (invasionSucceed) {
+                    this.gameOver();
+                }
+
                 this.bullets = this.bullets.filter(bullet => {
                     const { width, height, x, y } = bullet.state;
                     let bulletStatus = this.isElementVisible(width, height, x, y);
                     if (!bulletStatus || !bullet) return false;
 
+                    if (this.isElementInside(this.player.state, bullet.state)) {
+                        this.gameOver();
+                    }
+
                     this.enemies.enemies = this.enemies.enemies.filter(enemy => {
                         if (!bullet) return true;
                         if (this.isElementInside(enemy.state, bullet.state)) {
+                            this.addPoints(enemy.getPoints(this.state.level));
                             enemy = null;
                             bullet = null;
                             bulletStatus = false;
@@ -158,10 +197,11 @@ class Game {
                     return;
                 }
 
+                if (getRandomInt(0, 3000) > 2970) {
+                    this.enemies.fire(this.bullets);
+                }
                 const canMoveEnemies = this.enemies.move(this.state.moveEnemies, timeDiff);
                 if (!canMoveEnemies) {
-                    console.log(this.state);
-                    // this.state.prevDirection = this.state.moveEnemies;
                     this.changeEnemiesDirection(this.enemies);
                 }
 
@@ -182,6 +222,12 @@ class Game {
     pause () {
         this.menu.show();
         this.started = false;
+    }
+
+    gameOver () {
+        this.terminated = true;
+        this.pause();
+        // this.initGame();
     }
 
     handleEnter (event) {

@@ -5,14 +5,17 @@ import Bullet from './Bullet';
 let instance;
 
 class Player extends GameElement {
-    constructor (...args) {
-        super(...args);
+    constructor (ctx, gameSizes, ...args) {
+        super(ctx, gameSizes, ...args);
 
         this.fire = throttle(this.fire, 200).bind(this);
         this.state = {
             ...this.state,
             width: this.gameSizes.wUnit * 5,
         };
+
+        this.leftWall = gameSizes.wUnit * 15;
+        this.rightWall = gameSizes.width - gameSizes.wUnit * 15;
 
         // Singletone
         if (!instance) instance = this;
@@ -34,6 +37,27 @@ class Player extends GameElement {
         bullets.push(bullet);
         bullet.paint();
         return bullet;
+    }
+
+    move (direction, time, speed) {
+        if (this.reachedWall(direction) === direction) {
+            this.paint();
+            return false;
+        }
+
+        super.move(direction, time, speed);
+    }
+
+    reachedWall (direction) {
+        const { x, width } = this.state;
+
+        if (x + width >= this.rightWall && direction === 'right') {
+            return 'right';
+        } else if (x <= this.leftWall && direction === 'left') {
+            return 'left';
+        } else {
+            return false;
+        }
     }
 }
 

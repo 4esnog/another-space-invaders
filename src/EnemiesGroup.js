@@ -1,16 +1,17 @@
 import GameElement from './GameElement';
 import Enemy from './Enemy';
+import Bullet from './Bullet';
+import { getRandomInt } from './helpers';
 
 class EnemiesGroup extends GameElement {
     constructor (ctx, gameSizes, speed = 6) {
         super(ctx, gameSizes);
 
-        // const speed = 6 ;
-        const groupX = gameSizes.wUnit * 25;
         const groupY = gameSizes.hUnit * 10;
-        const groupWidth = gameSizes.width - groupX * 2;
-        const enemySize = Math.round(groupWidth / 23);
-        const groupHeight = enemySize * 9;
+        const groupHeight = gameSizes.hUnit * 50 - groupY;
+        const enemySize = Math.round(groupHeight / 9);
+        const groupWidth = enemySize * 23;
+        const groupX = (gameSizes.width - groupWidth) / 2;
 
         this.enemies = [];
         for (let i = 0; i < 5; i++) {
@@ -18,7 +19,7 @@ class EnemiesGroup extends GameElement {
                 let x = groupX + j * 2 * enemySize;
                 let y = groupY + i * 2 * enemySize;
                 this.enemies.push(
-                    new Enemy(ctx, gameSizes, enemySize, enemySize, speed, x, y)
+                    new Enemy(5 - i, ctx, gameSizes, enemySize, enemySize, speed, x, y)
                 );
             }
         }
@@ -33,8 +34,8 @@ class EnemiesGroup extends GameElement {
         };
 
         this.enemySize = enemySize;
-        this.leftWall = groupX - gameSizes.wUnit * 10;
-        this.rightWall = groupX + groupWidth + gameSizes.wUnit * 10;
+        this.leftWall = gameSizes.wUnit * 15;
+        this.rightWall = gameSizes.width - gameSizes.wUnit * 15;
         this.bottomWall = groupY + groupHeight + enemySize;
     }
 
@@ -45,7 +46,6 @@ class EnemiesGroup extends GameElement {
     }
 
     move (direction, time = 0, speed = this.state.speed) {
-        // console.log(this.reachedWall(), direction);
         if (this.reachedWall(direction) === direction) {
             this.paint();
             return false;
@@ -59,15 +59,40 @@ class EnemiesGroup extends GameElement {
         return true;
     }
 
+    fire (bullets) {
+        let { x, y, right, bottom } = this.state;
+        x = getRandomInt(x, right);
+        y = bottom;
+
+        const bullet = new Bullet(
+            'enemy',
+            this.ctx,
+            this.gameSizes,
+            x,
+            y,
+            this.state.speed * 3,
+        );
+
+        bullets.push(bullet);
+        bullet.paint();
+        return bullet;
+    }
+
     setDimensions (enemies) {
-        let x = enemies.map(enemy => enemy.state.x);
-        let y = enemies.map(enemy => enemy.state.y);
+        let xs = enemies.map(enemy => enemy.state.x);
+        let ys = enemies.map(enemy => enemy.state.y);
+        const x = Math.min(...xs);
+        const y = Math.min(...ys);
+        const right = Math.max(...xs) + enemies[0].state.width;
+        const bottom = Math.max(...ys) + enemies[0].state.height;
         this.state = {
             ...this.state,
-            x: Math.min(...x),
-            y: Math.min(...y),
-            right: Math.max(...x) + enemies[0].state.width,
-            bottom: Math.max(...y) + enemies[0].state.height,
+            x,
+            y,
+            right,
+            bottom,
+            width: right - x,
+            height: bottom - y,
         };
     }
 
