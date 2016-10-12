@@ -80,10 +80,10 @@ class Game {
             }
 
             this.state.prevDirection = 'bottom';
-            group.moveBottomWall(group.enemySize);
         } else {
             this.state.prevDirection = this.state.moveEnemies;
             this.state.moveEnemies = 'bottom';
+            group.moveBottomWall(group.enemySize);
         }
     }
 

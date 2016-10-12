@@ -78,26 +78,24 @@ class EnemiesGroup extends GameElement {
         return bullet;
     }
 
-    setDimensions (enemies) {
+    setDimensions (enemies, direction) {
         let xs = enemies.map(enemy => enemy.state.x);
         let ys = enemies.map(enemy => enemy.state.y);
         const x = Math.min(...xs);
         const y = Math.min(...ys);
         const right = Math.max(...xs) + enemies[0].state.width;
         const bottom = Math.max(...ys) + enemies[0].state.height;
-        this.state = {
-            ...this.state,
-            x,
-            y,
-            right,
-            bottom,
-            width: right - x,
-            height: bottom - y,
-        };
+        const width = right - x;
+        const height = bottom - y;
+
+        this.state = { ...this.state, x, y, right, bottom, width, height };
     }
 
     moveBottomWall (diff) {
-        this.bottomWall += diff;
+        this.bottomWall = this.state.y +
+            this.state.height +
+            this.enemySize +
+            diff;
     }
 
     reachedWall (direction) {
