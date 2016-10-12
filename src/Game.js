@@ -7,9 +7,6 @@ const BGCOLOR = '#1C191E';
 // TODO:
 // Customize menu screens:
 //  - input username before first game
-//  - game over state
-//  - last score
-//  - highest score
 //  - records table
 //
 // Records table:
@@ -103,12 +100,11 @@ class Game {
         this.resize();
         this.clearCanvas();
 
-        this.score.update(0);
+        this.score.wipe();
 
         this.state = {
             movePlayer: false,
             moveEnemies: 'right',
-            points: 0,
             level: 1,
         };
 
@@ -133,11 +129,6 @@ class Game {
         this.enemies = new EnemiesGroup(this.ctx, this.sizes, speed);
         this.enemies.paint();
         this.start();
-    }
-
-    addPoints (points) {
-        this.state.points += points;
-        this.score.update(this.state.points);
     }
 
     /**
@@ -184,7 +175,7 @@ class Game {
                     this.enemies.enemies = this.enemies.enemies.filter(enemy => {
                         if (!bullet) return true;
                         if (this.isElementInside(enemy.state, bullet.state)) {
-                            this.addPoints(enemy.getPoints(this.state.level));
+                            this.score.update(enemy.getPoints(this.state.level));
                             enemy = null;
                             bullet = null;
                             bulletStatus = false;
@@ -231,14 +222,14 @@ class Game {
      * pause - приостановить game loop
      */
     pause () {
-        this.menu.show();
         this.started = false;
+        this.menu.pause(this.score.getScore());
     }
 
     gameOver () {
         this.terminated = true;
-        this.pause();
-        // this.initGame();
+        this.started = false;
+        this.menu.gameOver(this.score.getScore());
     }
 
     handleEnter (event) {

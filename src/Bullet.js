@@ -1,7 +1,7 @@
 import GameElement from './GameElement';
 
 // const BULLET_COLOR = '#D98324';
-const BULLET_COLOR = '#E8FF19';
+const BULLET_COLOR = '#FC440F';
 class Bullet extends GameElement {
     constructor (owner, ctx, gameSizes, x, y, speed = 60, color = BULLET_COLOR) {
         super(ctx, gameSizes);

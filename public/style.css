@@ -35,8 +35,17 @@ html, body {
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(0, 0, 0, .4);
+    background: rgba(0, 0, 0, .8);
     z-index: 100;
+}
+
+.menu_show-gameover .menu__gameover {
+    display: block;
+    background:
+}
+
+.menu_show-score .menu__score {
+    display: block;
 }
 
 .menu__container {
@@ -47,12 +56,37 @@ html, body {
 
 .menu__header {
     color: #fff;
-    font-size: 3em;
+    font-size: 4em;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
 }
 
-.menu__invitation {
+.menu__gameover {
+    display: none;
+    color: red;
+    text-transform: uppercase;
+    font-size: 3em;
+    font-weight: bold;
+    letter-spacing: 0.15em;
+}
+
+.menu__score {
+    display: none;
+    color: #eee;
+    font-size: 2em;
+}
+
+.menu__controls {
     color: #999;
-    font-size: 1.5em;
+    font-size: 1.3em;
+    line-height: 1.8;
+}
+
+.keyboard-btn {
+    padding: 0.1em 0.3em;
+    background: #aaa;
+    color: #222;
+    border-radius: 2px;
 }
 
 .score {
