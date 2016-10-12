@@ -1,7 +1,9 @@
 import GameElement from './GameElement';
 
+// const BULLET_COLOR = '#D98324';
+const BULLET_COLOR = '#E8FF19';
 class Bullet extends GameElement {
-    constructor (owner, ctx, gameSizes, x, y, speed = 60) {
+    constructor (owner, ctx, gameSizes, x, y, speed = 60, color = BULLET_COLOR) {
         super(ctx, gameSizes);
 
         this.direction = (owner === 'player')
@@ -15,6 +17,7 @@ class Bullet extends GameElement {
             ? y - height
             : y + height;
 
+        this.color = color;
         this.state = {
             ...this.state,
             width,

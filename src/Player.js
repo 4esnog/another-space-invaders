@@ -2,6 +2,7 @@ import { throttle } from 'lodash';
 import GameElement from './GameElement';
 import Bullet from './Bullet';
 
+const PLAYER_COLOR = '#299EAD';
 let instance;
 
 class Player extends GameElement {
@@ -14,6 +15,7 @@ class Player extends GameElement {
             width: this.gameSizes.wUnit * 5,
         };
 
+        this.color = PLAYER_COLOR;
         this.leftWall = gameSizes.wUnit * 15;
         this.rightWall = gameSizes.width - gameSizes.wUnit * 15;
 
@@ -32,6 +34,8 @@ class Player extends GameElement {
             this.gameSizes,
             x,
             y,
+            60,
+            '#00C4E2',
         );
 
         bullets.push(bullet);

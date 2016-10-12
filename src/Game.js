@@ -4,6 +4,17 @@ import EnemiesGroup from './EnemiesGroup';
 import { getRandomInt } from './helpers';
 const BGCOLOR = '#1C191E';
 
+// TODO:
+// Customize menu screens:
+//  - input username before first game
+//  - game over state
+//  - last score
+//  - highest score
+//  - records table
+//
+// Records table:
+//  - maybe heroku or firebase back-end?
+
 class Game {
     constructor (canvas, menu, score) {
         this.started = false;

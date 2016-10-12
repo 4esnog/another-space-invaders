@@ -19,7 +19,7 @@ class EnemiesGroup extends GameElement {
                 let x = groupX + j * 2 * enemySize;
                 let y = groupY + i * 2 * enemySize;
                 this.enemies.push(
-                    new Enemy(5 - i, ctx, gameSizes, enemySize, enemySize, speed, x, y)
+                    new Enemy(5 - i, ctx, gameSizes, enemySize, enemySize, speed, x, y, '#DB3B43')
                 );
             }
         }
@@ -94,7 +94,6 @@ class EnemiesGroup extends GameElement {
     moveBottomWall (diff) {
         this.bottomWall = this.state.y +
             this.state.height +
-            this.enemySize +
             diff;
     }
 

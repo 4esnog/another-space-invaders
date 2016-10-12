@@ -1,7 +1,8 @@
 class GameElement {
-    constructor (ctx, gameSizes, width = 30, height = 30, speed = 20, x, y) {
+    constructor (ctx, gameSizes, width = 30, height = 30, speed = 20, x, y, color = '#EFE6DD') {
         this.ctx = ctx;
         this.gameSizes = gameSizes;
+        this.color = color;
         this.state = {
             width,
             height,
@@ -19,7 +20,7 @@ class GameElement {
     ) {
         this.state.x = x;
         this.state.y = y;
-        this.ctx.fillStyle = '#f1d';
+        this.ctx.fillStyle = this.color;
         this.ctx.fillRect(x, y, width, height);
     }
 
