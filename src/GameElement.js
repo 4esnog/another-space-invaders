@@ -1,7 +1,7 @@
 class GameElement {
     constructor (ctx, gameSizes, width = 30, height = 30, speed = 20, x, y, color = '#EFE6DD') {
         this.ctx = ctx;
-        this.gameSizes = gameSizes;
+        this.gameSizes = { ...gameSizes };
         this.color = color;
         this.state = {
             width,
@@ -10,6 +10,36 @@ class GameElement {
             x,
             y,
         };
+    }
+
+    // TODO: Доделать ресайз, чтобы возможно было играть на любых соотношениях
+    // сторон экранов.
+    // Сейчас на узких экранах группа врагов вылезает за правую стену,
+    // из-за чего и едет только вниз.
+    resize (newGameSizes) {
+        const k = {};
+        let { width, height, x, y } = this.state;
+        for (let key in newGameSizes) {
+            k[key] = Math.round(newGameSizes[key] / this.gameSizes[key]);
+        }
+
+        this.state = {
+            ...this.state,
+            width: width * k.width,
+            height: height * k.height,
+            x: x * k.width,
+            y: y * k.width,
+        };
+
+        this.gameSizes = newGameSizes;
+    }
+
+    increaseSpeed (diff) {
+        this.state.speed += parseInt(diff);
+    }
+
+    getSpeed () {
+        return this.state.speed;
     }
 
     paint (

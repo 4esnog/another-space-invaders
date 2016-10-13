@@ -2,29 +2,23 @@ import { throttle } from 'lodash';
 import GameElement from './GameElement';
 import Bullet from './Bullet';
 
-const PLAYER_COLOR = '#299EAD';
 let instance;
 
 class Player extends GameElement {
-    constructor (ctx, gameSizes, ...args) {
-        super(ctx, gameSizes, ...args);
+    constructor (ctx, gameSizes, color) {
+        super(ctx, gameSizes, gameSizes.wUnit * 5, gameSizes.wUnit * 3);
 
+        this.color = color;
         this.fire = throttle(this.fire, 200).bind(this);
-        this.state = {
-            ...this.state,
-            width: this.gameSizes.wUnit * 5,
-        };
 
-        this.color = PLAYER_COLOR;
         this.leftWall = gameSizes.wUnit * 15;
         this.rightWall = gameSizes.width - gameSizes.wUnit * 15;
 
-        // Singletone
         if (!instance) instance = this;
         return instance;
     }
 
-    fire (bullets) {
+    fire (bullets, color) {
         const x = Math.round(this.state.x + (this.state.width / 2));
         const y = Math.round(this.state.y - (this.state.height / 2));
 
@@ -35,7 +29,7 @@ class Player extends GameElement {
             x,
             y,
             60,
-            '#00C4E2',
+            color,
         );
 
         bullets.push(bullet);

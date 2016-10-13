@@ -59,7 +59,7 @@ class EnemiesGroup extends GameElement {
         return true;
     }
 
-    fire (bullets) {
+    fire (bullets, color) {
         let { x, y, right, bottom } = this.state;
         x = getRandomInt(x, right);
         y = bottom;
@@ -71,6 +71,7 @@ class EnemiesGroup extends GameElement {
             x,
             y,
             this.state.speed * 3,
+            color,
         );
 
         bullets.push(bullet);

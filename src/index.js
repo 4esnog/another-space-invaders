@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreNode = document.getElementById('score');
     const touchControls = document.getElementById('touch-controls');
     const canvas = document.getElementById('game');
+
     const menu = new Menu(menuNode, menuScoreNode, menuHighestScoreNode);
     const score = new Score(scoreNode);
     const game = new Game(canvas, menu, score);
