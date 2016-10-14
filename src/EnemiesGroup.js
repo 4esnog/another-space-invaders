@@ -93,9 +93,7 @@ class EnemiesGroup extends GameElement {
     }
 
     moveBottomWall (diff) {
-        this.bottomWall = this.state.y +
-            this.state.height +
-            diff;
+        this.bottomWall = this.state.y + this.state.height + diff;
     }
 
     reachedWall (direction) {

@@ -63,7 +63,10 @@ class Game {
     }
 
     resizeElements (sizes) {
-        const resizeCb = el => el.resize(sizes);
+        const resizeCb = el => {
+            el.resize(sizes);
+            el.paint();
+        };
         if (this.player) this.player.resize(sizes);
         if (this.enemies) this.enemies.enemies.map(resizeCb);
         if (this.bullets) this.bullets.map(resizeCb);
@@ -109,7 +112,13 @@ class Game {
         }
     }
 
-    changeEnemiesDirection (group) {
+    changeEnemiesDirection (group, direction) {
+        if (direction) {
+            this.state.prevDirection = this.state.enemiesDirection;
+            this.state.enemiesDirection = direction;
+            return;
+        }
+
         if (this.state.enemiesDirection === 'bottom') {
             if (this.state.prevDirection === 'left') {
                 this.state.enemiesDirection = 'right';
@@ -129,7 +138,7 @@ class Game {
         this.state.level++;
         const speed = this.enemies.getSpeed() + 2;
         this.player.increaseSpeed(2);
-        this.changeEnemiesDirection('right');
+        this.changeEnemiesDirection(this.enemies, 'right');
         this.enemies = new EnemiesGroup(this.ctx, this.sizes, speed);
         this.enemies.paint();
         this.start();
