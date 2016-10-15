@@ -37,6 +37,7 @@
     "webpack": "^1.13.2"
   },
   "dependencies": {
+    "Detect.js": "git+ssh://git@github.com/darcyclarke/Detect.js.git",
     "lodash": "^4.16.3"
   }
 }

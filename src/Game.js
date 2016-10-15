@@ -1,4 +1,5 @@
 import { throttle } from 'lodash';
+import detect from 'Detect.js/detect';
 import Player from './Player';
 import EnemiesGroup from './EnemiesGroup';
 import { getRandomInt } from './helpers';
@@ -16,7 +17,9 @@ class Game {
             movePlayer: false,
             enemiesDirection: 'right',
             level: 1,
+            autofire: false,
         };
+
         this.menu = menu;
         this.score = score;
         this.canvas = canvas;
@@ -53,23 +56,19 @@ class Game {
     }
 
     resize () {
+        const clientType = detect.parse(navigator.userAgent).device.type;
         const styles = window.getComputedStyle(this.canvas);
+
+        if (clientType === 'Mobile') {
+            this.state.autofire = true;
+        } else {
+            this.state.autofire = false;
+        }
 
         this.canvas.width = parseInt(styles.width);
         this.canvas.height = parseInt(styles.height);
         this.setSizes(styles);
         this.clearCanvas();
-        this.resizeElements(this.sizes);
-    }
-
-    resizeElements (sizes) {
-        const resizeCb = el => {
-            el.resize(sizes);
-            el.paint();
-        };
-        if (this.player) this.player.resize(sizes);
-        if (this.enemies) this.enemies.enemies.map(resizeCb);
-        if (this.bullets) this.bullets.map(resizeCb);
     }
 
     setSizes (styles) {
@@ -230,6 +229,10 @@ class Game {
             if (this.enemies.enemies.length === 0) {
                 this.increaseLevel();
                 return;
+            }
+
+            if (this.state.autofire) {
+                this.player.fire(this.bullets, PLAYER_BULLET_COLOR);
             }
 
             // Инопланетяне тоже умеют стрелять, но приблизительно
