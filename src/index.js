@@ -1,8 +1,10 @@
 import Game from './Game';
 import Menu from './Menu';
 import Score from './Score';
+import Pause from './PauseButton';
 
 document.addEventListener('DOMContentLoaded', () => {
+    const pauseButtonNode = document.getElementById('pause-button');
     const menuNode = document.getElementById('menu');
     const menuScoreNode = document.getElementById('menu__score');
     const menuHighestScoreNode = document.getElementById('menu__highest-score');
@@ -10,9 +12,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const touchControls = document.getElementById('touch-controls');
     const canvas = document.getElementById('game');
 
+    const pause = new Pause(pauseButtonNode);
     const menu = new Menu(menuNode, menuScoreNode, menuHighestScoreNode);
     const score = new Score(scoreNode);
-    const game = new Game(canvas, menu, score);
+    const game = new Game(canvas, menu, score, pause);
+
+    function handleArrows (event) {
+        switch (event.code) {
+            case 'ArrowLeft': {
+                game.handleArrowLeft(event);
+                break;
+            }
+
+            case 'ArrowRight': {
+                game.handleArrowRight(event);
+                break;
+            }
+        }
+    }
+
+    function handleTouchControls (event) {
+        switch (event.target.id) {
+            case 'left': {
+                game.handleArrowLeft(event);
+                break;
+            }
+
+            case 'right': {
+                game.handleArrowRight(event);
+                break;
+            }
+        }
+    }
 
     window.addEventListener('resize', () => {
         game.resize();
@@ -31,36 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    function handleArrows (event) {
-        switch (event.code) {
-            case 'ArrowLeft': {
-                game.handleArrowLeft(event);
-                break;
-            }
-
-            case 'ArrowRight': {
-                game.handleArrowRight(event);
-                break;
-            }
-        }
-    }
-
     window.addEventListener('keydown', handleArrows);
     window.addEventListener('keyup', handleArrows);
-
-    function handleTouchControls (event) {
-        switch (event.target.id) {
-            case 'left': {
-                game.handleArrowLeft(event);
-                break;
-            }
-
-            case 'right': {
-                game.handleArrowRight(event);
-                break;
-            }
-        }
-    }
 
     touchControls.addEventListener('pointerdown', handleTouchControls);
     touchControls.addEventListener('pointerup', handleTouchControls);
@@ -69,5 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!game.started) {
             game.handleEnter(event);
         }
+    });
+
+    pause.node.addEventListener('pointerup', (event) => {
+        game.handleEnter(event);
     });
 });

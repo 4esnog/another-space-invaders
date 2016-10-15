@@ -10,7 +10,7 @@ const PLAYER_BULLET_COLOR = '#00C4E2';
 const ENEMY_BULLET_COLOR = '#FC440F';
 
 class Game {
-    constructor (canvas, menu, score) {
+    constructor (canvas, menu, score, pauseButton) {
         this.state = {
             started: false,
             terminated: false,
@@ -22,6 +22,7 @@ class Game {
 
         this.menu = menu;
         this.score = score;
+        this.pauseButton = pauseButton;
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.resize = throttle(this.resize, 500).bind(this);
@@ -146,17 +147,20 @@ class Game {
     pause () {
         this.state.started = false;
         this.menu.pause(this.score.getScore());
+        this.pauseButton.showPlay();
     }
 
     gameOver () {
         this.state.terminated = true;
         this.state.started = false;
         this.menu.gameOver(this.score.getScore());
+        this.pauseButton.showPlay();
     }
 
     start () {
         let lastTime, timeDiff;
         this.menu.hide();
+        this.pauseButton.showPause();
         if (this.state.terminated) {
             this.state.terminated = false;
             this.initGame();
@@ -256,8 +260,9 @@ class Game {
         }.bind(this));
     }
 
-    handleEnter (event) {
+    handleEnter (event, cb) {
         this.state.started ? this.pause() : this.start();
+        if (cb) cb(this.state.started);
     }
 
     handleSpace (event) {
@@ -266,7 +271,7 @@ class Game {
     }
 
     handleArrowLeft (event) {
-        if (!this.state.started || this.state.movePlayer === 'right') return;
+        if (!this.state.started) return;
 
         if (event.type === 'keydown' || event.type === 'pointerdown') {
             this.state.movePlayer = 'left';
@@ -276,7 +281,7 @@ class Game {
     }
 
     handleArrowRight (event) {
-        if (!this.state.started || this.state.movePlayer === 'left') return;
+        if (!this.state.started) return;
 
         if (event.type === 'keydown' || event.type === 'pointerdown') {
             this.state.movePlayer = 'right';
