@@ -40,13 +40,13 @@ class GameElement {
     setNewPosition (dirX, dirY, speed, time) {
         const dx = dirX * (speed * this.gameSizes.wUnit) * (time / 1000);
         const dy = dirY * (speed * this.gameSizes.hUnit) * (time / 1000);
-        const newX = Math.round(this.state.x + dx);
-        const newY = Math.round(this.state.y + dy);
+        const newX = this.state.x + dx;
+        const newY = this.state.y + dy;
 
         this.paint(newX, newY);
         return {
-            dx: Math.round(dx),
-            dy: Math.round(dy),
+            dx: dx,
+            dy: dy,
         };
     }
 
