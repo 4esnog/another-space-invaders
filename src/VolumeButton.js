@@ -1,13 +1,13 @@
 import IconButton from './IconButton';
 
-class PauseButton extends IconButton {
-    showPause () {
+class VolumeButton extends IconButton {
+    showUnmuted () {
         super.showStateOne();
     }
 
-    showPlay () {
+    showMuted () {
         super.showStateTwo();
     }
 }
 
-export default PauseButton;
+export default VolumeButton;

@@ -18,7 +18,7 @@ class Player extends GameElement {
         return instance;
     }
 
-    fire (bullets, color) {
+    fire (bullets, sound, color) {
         const x = Math.round(this.state.x + (this.state.width / 2));
         const y = Math.round(this.state.y - (this.state.height / 2));
 
@@ -34,6 +34,12 @@ class Player extends GameElement {
 
         bullets.push(bullet);
         bullet.paint();
+
+        if (sound) {
+            sound.currentTime = 0;
+            sound.play();
+        }
+
         return bullet;
     }
 

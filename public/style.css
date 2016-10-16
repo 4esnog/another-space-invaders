@@ -103,25 +103,35 @@ p {
     color: #fff;
 }
 
-.pause-button {
+.controls-icons {
     display: block;
     position: fixed;
-    padding: 0.3em 0.5em;
     left: 0;
     top: 0;
+    width: 10%;
+    z-index: 110;
+}
+
+.pause-button,
+.volume-button {
+    display: block;
+    width: 100%;
+    padding: 0.3em 0.4em;
+    text-align: left;
     font-size: 2.2em;
     color: #fff;
     background: transparent;
     border: none;
-    z-index: 110;
-    vertical-align: middle;
+    transition: transform 0.1s ease-in-out;
 }
 
-.pause-button:focus {
+.pause-button:focus,
+.volume-button:focus {
     outline: none;
 }
 
-.pause-button:active {
+.pause-button:active,
+.volume-button:active {
     transform: scale(0.95);
 }
 
@@ -133,6 +143,23 @@ p {
 .pause-button_pause .pause-button__pause-icon,
 .pause-button_play .pause-button__play-icon {
     display: block;
+}
+
+.volume-button__on-icon,
+.volume-button__off-icon {
+    display: none;
+}
+
+.volume-button_on .volume-button__on-icon,
+.volume-button_off .volume-button__off-icon {
+    display: inline-block;
+}
+
+.volume-button img {
+    width: 100%;
+    max-width: 1.2em;
+    max-height: 1.2em;
+    /*display: inline-block;*/
 }
 
 @media screen and (max-width: 700px) {

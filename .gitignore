@@ -3,4 +3,6 @@ target/
 public/*
 !public/index.html
 !public/style.css
+!public/audio/
+!public/img/
 npm*

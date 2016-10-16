@@ -10,7 +10,7 @@ const PLAYER_BULLET_COLOR = '#00C4E2';
 const ENEMY_BULLET_COLOR = '#FC440F';
 
 class Game {
-    constructor (canvas, menu, score, pauseButton) {
+    constructor (canvas, menu, score, pauseButton, sounds, soundGainControl) {
         this.state = {
             started: false,
             terminated: false,
@@ -20,6 +20,7 @@ class Game {
             autofire: false,
         };
 
+        this.sounds = sounds;
         this.menu = menu;
         this.score = score;
         this.pauseButton = pauseButton;
@@ -142,6 +143,8 @@ class Game {
         this.enemies = new EnemiesGroup(this.ctx, this.sizes, speed);
         this.enemies.paint();
         this.start();
+        this.sounds.levelUp.currentTime = 0;
+        this.sounds.levelUp.play();
     }
 
     pause () {
@@ -153,6 +156,10 @@ class Game {
     gameOver () {
         this.state.terminated = true;
         this.state.started = false;
+
+        this.sounds.gameOver.currentTime = 0;
+        this.sounds.gameOver.play();
+
         this.menu.gameOver(this.score.getScore());
         this.pauseButton.showPlay();
     }
@@ -210,6 +217,8 @@ class Game {
 
                     // Убиваем варага при попадании по нему
                     if (this.isElementInside(enemy.state, bullet.state)) {
+                        this.sounds.explosion.currentTime = 0;
+                        this.sounds.explosion.play();
                         this.score.update(enemy.getPoints(this.state.level));
                         enemy = null;
                         bullet = null;
@@ -236,13 +245,13 @@ class Game {
             }
 
             if (this.state.autofire) {
-                this.player.fire(this.bullets, PLAYER_BULLET_COLOR);
+                this.player.fire(this.bullets, this.sounds.player, PLAYER_BULLET_COLOR);
             }
 
             // Инопланетяне тоже умеют стрелять, но приблизительно
             // 1 раз в 100 кадров / 0.6 раз в секунду
             if (getRandomInt(0, 3000) > 2970) {
-                this.enemies.fire(this.bullets, ENEMY_BULLET_COLOR);
+                this.enemies.fire(this.bullets, this.sounds.enemy, ENEMY_BULLET_COLOR);
             }
 
             const canEnemiesMove = this.enemies.move(this.state.enemiesDirection, timeDiff);
@@ -267,7 +276,7 @@ class Game {
 
     handleSpace (event) {
         if (!this.state.started) return;
-        this.player.fire(this.bullets, PLAYER_BULLET_COLOR);
+        this.player.fire(this.bullets, this.sounds.player, PLAYER_BULLET_COLOR);
     }
 
     handleArrowLeft (event) {
